@@ -2,30 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
-use App\Models\User;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     use HasApiTokens;
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        // Giriş için gerekli olan alanları tanımlayın
-        $credentials = $request->only('email', 'password');
-
-        // Kullanıcıyı doğrulayın
-        if (Auth::attempt($credentials)) {
-            // Doğrulandıysa token oluşturun
-            $user = Auth::user();
-            $token = $user->createToken('MyApp')->accessToken;
-
-            return response()->json(['token' => $token], 200);
+        if (Auth::attempt(["email" => $request->email, "password" => $request->password])) {
+            return generateApiMessage(0,0,200,"İşlem başarılı",['token' => Auth::user()->createToken('user')->accessToken]);
         }
 
-        // Giriş başarısızsa hata döndürün
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return generateApiMessage(1,1,401,"İşlem başarısız");
     }
 }
