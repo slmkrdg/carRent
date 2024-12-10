@@ -20,6 +20,6 @@ class RegisterController extends Controller
             'password' => bcrypt($request->password), // Şifreyi bcrypt ile şifrele
         ]);
 
-        return generateApiMessage(1,1,200,"İşlem başarılı");
+        return generateResponse(1,1,200,"İşlem başarılı");
     }
 }
